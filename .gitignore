@@ -11,3 +11,6 @@
 
 bin/
 obj/
+.vscode/
+
+Program.cs
