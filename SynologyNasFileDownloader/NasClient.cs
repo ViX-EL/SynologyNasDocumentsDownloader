@@ -22,6 +22,11 @@ namespace SynologyNas
             await LogoutAsync();
         }
 
+        public void ChangeUrl(string nasUrl)
+        {
+            _servicesContainer.Authorizator.ChangeUrl(nasUrl);
+        }
+
         public async Task<bool> TryLoginAsync(string username, string password)
         {
             if (!IsAuthorized)

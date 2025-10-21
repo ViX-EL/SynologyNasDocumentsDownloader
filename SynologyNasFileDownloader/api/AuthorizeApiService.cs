@@ -15,6 +15,18 @@ namespace SynologyNas.Api
             NasUrl = nasUrl;
         }
 
+        public void ChangeUrl(string nasUrl)
+        {
+            if (!IsAuthorized)
+            {
+                NasUrl = nasUrl;
+            }
+            else
+            {
+                Console.WriteLine("Невозможно сменить адрес Nas, так как вы уже авторизованы!");
+            }
+        }
+
         public async Task<bool> TryLoginAsync(string username, string password)
         {
             string encodedUsername = Uri.EscapeDataString(username);
