@@ -7,7 +7,6 @@ namespace SynologyNas.Api
         public HttpClient Client { get; private set; }
         public string NasUrl { get; private set; }
         public string Sid { get; private set; } = "";
-
         public bool IsAuthorized => Sid != "";
 
         public AuthorizeApiService(HttpClient client, string nasUrl)
@@ -16,7 +15,7 @@ namespace SynologyNas.Api
             NasUrl = nasUrl;
         }
 
-        public async Task LoginAsync(string username, string password)
+        public async Task<bool> TryLoginAsync(string username, string password)
         {
             string encodedUsername = Uri.EscapeDataString(username);
             string encodedPassword = Uri.EscapeDataString(password);
@@ -38,7 +37,7 @@ namespace SynologyNas.Api
                 {
                     Console.WriteLine("Неверный логин или пароль, указанный для сетевого диска!");
                 }
-                return;
+                return false;
             }
 
             Sid = JObject.Parse(response)["data"]?["sid"]?.ToString() ?? "";
@@ -46,7 +45,9 @@ namespace SynologyNas.Api
             if (Sid == "")
             {
                 Console.WriteLine("Sid Synology Nas не был получен!");
-            }
+                return false;
+            }           
+            return true;
         }
 
         public async Task<string> LogoutAsync()

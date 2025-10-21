@@ -11,11 +11,10 @@ namespace SynologyNas
 
         public bool IsAuthorized => _servicesContainer.Authorizator.IsAuthorized;
 
-        public NasClient(string nasUrl, string username, string password, IFileSearcherFactory? fileSearcherFactory = null)
+        public NasClient(string nasUrl, IFileSearcherFactory? fileSearcherFactory = null)
         {
             IFileSearcherFactory searcherFactory = fileSearcherFactory ?? new FileSearcherFactory();
             _servicesContainer = new(nasUrl, searcherFactory);
-            LoginAsync(username, password).Wait();
         }
 
         public async void Dispose()
@@ -23,12 +22,13 @@ namespace SynologyNas
             await LogoutAsync();
         }
 
-        public async Task LoginAsync(string username, string password)
+        public async Task<bool> TryLoginAsync(string username, string password)
         {
             if (!IsAuthorized)
             {
-                await _servicesContainer.Authorizator.LoginAsync(username, password);
+                return await _servicesContainer.Authorizator.TryLoginAsync(username, password);
             }
+            return false;
         }
 
         public async Task LogoutAsync()
