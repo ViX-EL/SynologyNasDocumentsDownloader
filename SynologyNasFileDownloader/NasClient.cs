@@ -31,7 +31,7 @@ namespace SynologyNas
             }
         }
 
-        private async Task LogoutAsync()
+        public async Task LogoutAsync()
         {
             await _servicesContainer.Authorizator.LogoutAsync();
         }
@@ -55,14 +55,14 @@ namespace SynologyNas
             return await _servicesContainer.Sig_File_Searcher.SearchAsync(nasFolderPath, fileNamesWithoutExtension);
         }
 
-        public async Task DownloadFilesAsync(HashSet<string> filePaths, string localSavePath = "")
+        public async Task<List<string>> DownloadFilesAsync(HashSet<string> filePaths, string localSavePath = "")
         {
             if (!IsAuthorized)
             {
                 Console.WriteLine("Скачивание pdf файлов не возможно, Sid Synology Nas не был получен!");
-                return;
+                return new();
             }
-            await _servicesContainer.File_Downloader.DownloadAsync(filePaths, localSavePath);
+            return await _servicesContainer.File_Downloader.DownloadAsync(filePaths, localSavePath);
         }
 
         public async Task<string?> GetApiInfoAsync()
